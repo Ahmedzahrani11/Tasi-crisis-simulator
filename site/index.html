@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>محاكي تاسي 2020</title>
+  <meta name="description" content="محاكاة تداول تفاعلية لإدارة محفظة بقيمة 100,000 ريال خلال أزمة كورونا في السوق المالية السعودية عام 2020.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ Onboarding ============ -->
+<main id="screen-onboarding" class="screen container">
+  <h1>🏛️ منصة محاكاة تداول تاسي: تجربة أزمة عام 2020</h1>
+  <div class="grid-2">
+    <section class="card">
+      <h2>أهلاً بك في قاعة التداول 📊</h2>
+      <p>تخوض في هذه التجربة محاكاة واقعية لإدارة محفظة استثمارية برأس مال قدره <b>100,000 ريال سعودي</b> خلال كافة جلسات عام <b>2020</b>:</p>
+      <ul>
+        <li><b>الصدمة:</b> انهيار أسعار النفط العالمية وقاع الأسواق في مارس.</li>
+        <li><b>الإغلاق:</b> فترات الحظر وتأثر القطاعات الاقتصادية.</li>
+        <li><b>الانفراجة:</b> إعلانات اللقاحات وتدفق برامج الدعم وعودة مسار التعافي.</li>
+      </ul>
+      <p>الهدف هو بناء محفظة متوازنة، الاستفادة من الإفصاحات المالية لكل شركة، وتحقيق أعلى عائد ممكن مقارنة بمؤشر السوق.</p>
+      <form id="start-form" class="row">
+        <input id="player-name" type="text" maxlength="40" placeholder="مثال: تركي - مدير الصندوق" aria-label="اسم المتداول" required>
+        <button type="submit" class="btn primary">🚀 بدء جلسات التداول</button>
+      </form>
+      <p id="load-error" class="alert warn hidden"></p>
+    </section>
+    <section class="card">
+      <h2>🏆 لوحة المتصدرين</h2>
+      <div id="onboarding-board"></div>
+    </section>
+  </div>
+</main>
+
+<!-- ============ Trading terminal ============ -->
+<main id="screen-terminal" class="screen container hidden">
+  <header class="row between">
+    <h1>🏛️ صالة تداول السوق المالي (2020)</h1>
+    <span class="chip">مدير المحفظة: <b id="player-label"></b></span>
+  </header>
+
+  <section class="metrics">
+    <div class="metric"><span>📅 تاريخ الجلسة</span><b id="m-date"></b><small id="m-session"></small></div>
+    <div class="metric"><span>🛢️ خام برنت العالمي</span><b id="m-brent"></b><small id="m-brent-chg"></small></div>
+    <div class="metric"><span id="m-index-label">📈 مؤشر تاسي</span><b id="m-index"></b><small id="m-index-chg"></small></div>
+    <div class="metric"><span>💵 السيولة النقدية</span><b id="m-cash"></b></div>
+    <div class="metric"><span>💼 إجمالي قيمة المحفظة</span><b id="m-equity"></b><small id="m-pnl"></small></div>
+  </section>
+
+  <div id="flash" class="alert hidden"></div>
+
+  <section class="alert info">📢 <b>آخر تطور إخباري مؤثر:</b> <span id="headline"></span></section>
+  <details class="card">
+    <summary id="news-summary"></summary>
+    <ul id="news-list" class="news"></ul>
+  </details>
+
+  <section class="row controls">
+    <button id="btn-play" class="btn primary"></button>
+    <button id="btn-next" class="btn">⏩ الجلسة التالية</button>
+    <label class="row">السرعة:
+      <select id="speed">
+        <option value="2000">بطيئة</option>
+        <option value="1200" selected>عادية</option>
+        <option value="500">سريعة</option>
+      </select>
+    </label>
+    <button id="btn-reset" class="btn ghost">🔄 تصفير وإعادة الضبط</button>
+  </section>
+
+  <div class="grid-main">
+    <section class="card">
+      <h2>📋 قائمة أسعار ومراقبة الأسهم</h2>
+      <div class="row">
+        <select id="sector-filter" aria-label="القطاع"></select>
+        <input id="search" type="search" placeholder="بحث باسم السهم أو رمزه" aria-label="بحث">
+      </div>
+      <div class="table-wrap tall">
+        <table>
+          <thead><tr><th>الرمز</th><th>الشركة</th><th>الإغلاق</th><th>التغير</th><th>المملوك</th></tr></thead>
+          <tbody id="watchlist"></tbody>
+        </table>
+      </div>
+      <h3>💼 المراكز الاستثمارية المفتوحة</h3>
+      <div id="positions"></div>
+    </section>
+
+    <section class="card">
+      <h2>⚡ مركز الأوامر والتحليل</h2>
+      <select id="stock-select" aria-label="السهم"></select>
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="order" role="tab">📈 التحليل وتنفيذ الصفقات</button>
+        <button class="tab" data-tab="fin" role="tab">📑 القوائم المالية والإفصاحات</button>
+      </div>
+
+      <div id="tab-order" class="tab-panel">
+        <div id="order-locked" class="alert warn hidden"></div>
+        <div id="order-desk">
+          <div class="chart-box"><canvas id="price-chart"></canvas></div>
+          <div class="grid-2 tight">
+            <div class="order buy">
+              <p>سعر التنفيذ: <b id="exec-price"></b></p>
+              <label>كمية الشراء <small id="buy-max"></small>
+                <div class="row"><input id="buy-qty" type="number" min="0" step="1" value="0"><button id="buy-all" class="btn ghost small" type="button">الحد الأقصى</button></div>
+              </label>
+              <p class="muted" id="buy-cost"></p>
+              <button id="btn-buy" class="btn buy-btn">🟢 تأكيد الشراء</button>
+            </div>
+            <div class="order sell">
+              <p>الكمية المتاحة: <b id="held-qty"></b></p>
+              <label>كمية البيع
+                <div class="row"><input id="sell-qty" type="number" min="0" step="1" value="0"><button id="sell-all" class="btn ghost small" type="button">الكل</button></div>
+              </label>
+              <p class="muted" id="sell-rev"></p>
+              <button id="btn-sell" class="btn sell-btn">🔴 تأكيد البيع</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-fin" class="tab-panel hidden"></div>
+    </section>
+  </div>
+
+  <details id="trades-box" class="card hidden">
+    <summary>📜 سجل الصفقات المنفذة</summary>
+    <div class="table-wrap"><table>
+      <thead><tr><th>التاريخ</th><th>النوع</th><th>الشركة</th><th>الكمية</th><th>السعر</th><th>القيمة</th></tr></thead>
+      <tbody id="trades"></tbody>
+    </table></div>
+  </details>
+</main>
+
+<!-- ============ End-of-year report ============ -->
+<main id="screen-report" class="screen container hidden">
+  <h1>🏁 انتهت تداولات عام 2020 | تقرير الأداء: <span id="report-player"></span></h1>
+  <section class="metrics four">
+    <div class="metric"><span>إجمالي القيمة النهائية</span><b id="r-final"></b></div>
+    <div class="metric"><span>عائد محفظتك</span><b id="r-pnl"></b></div>
+    <div class="metric"><span id="r-index-label">عائد مؤشر تاسي</span><b id="r-index"></b></div>
+    <div class="metric"><span>الفارق المحقق (ألفا)</span><b id="r-alpha"></b></div>
+  </section>
+  <p id="r-verdict" class="alert"></p>
+  <div class="grid-main">
+    <section class="card"><div class="chart-box big"><canvas id="report-chart"></canvas></div></section>
+    <section class="card"><h2>🏆 لوحة المتصدرين</h2><div id="report-board"></div></section>
+  </div>
+  <button id="btn-restart" class="btn primary">🔄 بدء محاولة جديدة</button>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script src="config.js"></script>
+<script src="data/content.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
