@@ -26,6 +26,13 @@ def load_content_constant(name):
     return json.loads(match.group(1))
 
 
+def post_2020_split_factor(sym):
+    splits = yf.Ticker(sym).splits
+    # Ratios below 1 are capital reductions (e.g. Savola 2024), not share splits, so they are left out
+    after = splits[(splits.index.strftime("%Y-%m-%d") > "2020-12-31") & (splits > 1)]
+    return float(after.prod()) if len(after) else 1.0
+
+
 def main():
     stock_syms = [s["symbol"] for sec in load_content_constant("SECTORS") for s in sec["stocks"]]
     listing_dates = load_content_constant("LISTING_DATES")
@@ -44,6 +51,11 @@ def main():
     benchmark = next((c for c in BENCHMARK_CANDIDATES if c in filled.columns and filled[c].notna().any()), None)
     if benchmark is None:
         raise SystemExit("No benchmark series available")
+
+    # Yahoo back-adjusts history for later bonus issues; undo those so players see the nominal 2020 prices
+    for sym in stock_syms:
+        if sym in filled.columns:
+            filled[sym] = filled[sym] * post_2020_split_factor(sym)
 
     dates = filled.index.strftime("%Y-%m-%d").tolist()
 
