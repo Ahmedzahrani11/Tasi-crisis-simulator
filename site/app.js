@@ -149,7 +149,7 @@ function startGame(player) {
 
 function enterTerminal() {
   $("player-label").textContent = state.player;
-  $("m-index-label").textContent = market.benchmark === "^TASI.SR" ? "📈 مؤشر تاسي (TASI)" : "📈 مؤشر تاسي (KSA)";
+  $("m-index-label").textContent = market.benchmark === "^TASI.SR" ? "📈 مؤشر تاسي (TASI)" : "📈 مؤشر السوق (MSCI KSA)";
   showScreen("terminal");
   renderAll();
   if (priceChart) priceChart.resize();
@@ -423,14 +423,14 @@ async function finish() {
   $("r-final").textContent = sar(final);
   $("r-pnl").textContent = pct(pnl);
   $("r-pnl").className = signClass(pnl);
-  $("r-index-label").textContent = market.benchmark === "^TASI.SR" ? "عائد مؤشر تاسي 2020" : "عائد مؤشر تاسي 2020 (KSA)";
+  $("r-index-label").textContent = market.benchmark === "^TASI.SR" ? "عائد مؤشر تاسي 2020" : "عائد مؤشر السوق 2020 (MSCI KSA)";
   $("r-index").textContent = pct(idx);
   $("r-alpha").textContent = pct(alpha);
   $("r-alpha").className = signClass(alpha);
   const verdict = $("r-verdict");
   verdict.className = `alert ${alpha > 0 ? "ok" : "info"}`;
   verdict.textContent = alpha > 0
-    ? `أداء مالي استثنائي: أغلقت العام بعائد يتفوق على أداء مؤشر تاسي العام بفارق إيجابي قدره ${pct(alpha)}.`
+    ? `أداء مالي استثنائي: أغلقت العام بعائد يتفوق على أداء مؤشر السوق بفارق إيجابي قدره ${pct(alpha)}.`
     : "أغلقت تداولات العام بنجاح؛ وقد أبرزت التجربة أهمية قراءة القوائم المالية وإدارة السيولة وقت الصدمات.";
 
   renderReportChart();
@@ -450,7 +450,7 @@ function renderReportChart() {
     labels: market.dates.slice(0, n),
     datasets: [
       { label: "محفظتك الاستثمارية", data: state.curve.map(v => (v / INITIAL_CAPITAL) * 100), borderColor: c.up, borderWidth: 3, pointRadius: 0 },
-      { label: "مؤشر تاسي العام", data: market.series.TASI.slice(0, n).map(v => (v / base) * 100), borderColor: c.muted, borderDash: [6, 4], borderWidth: 2, pointRadius: 0 },
+      { label: "مؤشر السوق", data: market.series.TASI.slice(0, n).map(v => (v / base) * 100), borderColor: c.muted, borderDash: [6, 4], borderWidth: 2, pointRadius: 0 },
     ],
   };
   if (reportChart) reportChart.destroy();
